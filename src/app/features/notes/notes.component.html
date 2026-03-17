@@ -1,0 +1,43 @@
+<div class="notes-board"
+     cdkDropList
+     (cdkDropListDropped)="drop($event)">
+
+  <div class="note-card"
+       *ngFor="let note of notes"
+       cdkDrag>
+
+    <div class="pin"></div>
+
+    <h3>{{note.title}}</h3>
+
+    <p>{{note.text}}</p>
+
+  </div>
+
+  <button class="add-note" (click)="addNote()">
+    + Nova anotação
+  </button>
+
+</div>
+
+  <div class="tables-section">
+
+        <app-table
+            [title]="weekly.title"
+            [columns]="weekly.columns"
+            [rows]="weekly.rows">
+        </app-table>
+
+        <app-table
+            [title]="cleaning.title"
+            [columns]="cleaning.columns"
+            [rows]="cleaning.rows">
+        </app-table>
+
+        <app-table
+            [title]="food.title"
+            [columns]="food.columns"
+            [rows]="food.rows">
+        </app-table>
+
+    </div>

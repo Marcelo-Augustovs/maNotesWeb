@@ -1,0 +1,260 @@
+.dashboard-container {
+
+  padding: 20px;
+
+}
+
+/* header */
+
+.dashboard-header {
+
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 20px;
+
+}
+
+.period-filter {
+
+  display: flex;
+  align-items: center;
+  gap: 20px;
+
+}
+
+.year-control {
+
+  display: flex;
+  align-items: center;
+  gap: 5px;
+
+}
+
+.year-control button {
+
+  border: none;
+  background: #f2f2f2;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+
+}
+
+.year-input {
+
+  width: 70px;
+  text-align: center;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 4px;
+
+}
+
+.months {
+
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+
+}
+
+.months span {
+
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: 0.2s;
+
+}
+
+.months span:hover {
+
+  background: #f2f2f2;
+
+}
+
+.months span.active {
+
+  border-bottom: 3px solid #2c3e50;
+  font-weight: 600;
+
+}
+/* cards */
+
+.cards {
+
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+
+}
+
+.summary-card {
+
+  display: flex;
+  align-items: center;
+  gap: 15px;
+
+  background: white;
+
+  padding: 20px;
+
+  border-radius: 10px;
+
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+
+  transition: all 0.2s ease;
+
+}
+
+.summary-card:hover {
+
+  transform: translateY(-3px);
+
+  box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+
+}
+
+.card-icon {
+
+  font-size: 24px;
+
+  width: 40px;
+  height: 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 8px;
+
+  background: #f2f2f2;
+
+}
+
+.card-title {
+
+  font-size: 13px;
+  color: #777;
+
+}
+
+.summary-card h2 {
+
+  margin: 2px 0 0 0;
+
+}
+
+/* cores */
+
+.receita {
+
+  border-top: 4px solid #4CAF50;
+
+}
+
+.despesa {
+
+  border-top: 4px solid #e74c3c;
+
+}
+
+.saldo {
+
+  border-top: 4px solid #3498db;
+
+}
+
+.geral {
+
+  border-top: 4px solid #f1c40f;
+
+}
+
+/* ações */
+
+.actions {
+
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 15px;
+
+}
+
+.actions-right {
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+
+}
+
+/* tabela */
+
+.table-area table {
+
+  width: 100%;
+
+  border-collapse: collapse;
+
+}
+
+.table-area th {
+
+  text-align: left;
+
+  padding: 10px;
+
+  border-bottom: 2px solid #ddd;
+
+}
+
+.table-area td {
+
+  padding: 10px;
+
+  border-bottom: 1px solid #eee;
+
+}
+
+/* badge */
+
+.badge {
+
+  padding: 3px 8px;
+
+  border-radius: 12px;
+
+  font-size: 12px;
+
+  color: white;
+
+}
+
+.badge.receita {
+
+  background: #2ecc71;
+
+}
+
+/* chart */
+
+.chart-container {
+
+  margin-top: 30px;
+
+  background: white;
+
+  padding: 20px;
+
+  border-radius: 10px;
+
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+
+  height: 350px;
+
+  max-width: 900px;
+
+}

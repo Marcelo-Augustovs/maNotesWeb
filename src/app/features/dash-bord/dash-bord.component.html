@@ -1,0 +1,121 @@
+<div class="dashboard-container">
+
+  <!-- filtros -->
+  <div class="dashboard-header">
+
+     <div class="period-filter">
+
+        <div class="year-control">
+
+          <button (click)="previousYear()">◀</button>
+
+          <input
+            type="number"
+            [(ngModel)]="selectedYear"
+            (change)="changeYear()"
+            class="year-input"
+          >
+
+          <button (click)="nextYear()">▶</button>
+
+        </div>
+
+        <div class="months">
+
+          <span
+            *ngFor="let month of months; let i = index"
+            (click)="selectMonth(i)"
+            [class.active]="selectedMonth === i"
+          >
+            {{month}}
+          </span>
+
+  </div>
+
+</div>
+
+  </div>
+  <!-- cards -->
+ 
+ <div class="cards">
+
+  <app-card *ngFor="let card of cardList"
+    [title]="card.title"
+    [color]="card.color"
+    [icon]="card.icon"
+    [valor]="card.valor"
+   ></app-card>
+
+</div>
+
+  <!-- ações -->
+  <div class="actions">
+
+  <div class="actions-right">
+
+    <div class="add-container">
+
+      <button class="btn-add" (click)="toggleAddMenu()">
+        Adicionar ▼
+      </button>
+
+      <div class="add-menu" *ngIf="showAddMenu">
+
+        <div (click)="addExpense()">💰 Despesa</div>
+        <div (click)="addRevenue()">💵 Receita</div>
+
+      </div>
+
+    </div>
+
+    <input placeholder="Pesquisar">
+
+  </div>
+
+</div>
+
+  <!-- tabela -->
+  <div class="table-area">
+
+    <table>
+
+      <thead>
+
+        <tr>
+          <th>Descrição</th>
+          <th>Valor</th>
+          <th>Data</th>
+          <th>Categoria</th>
+          <th>Tipo</th>
+          <th>Pagamento</th>
+        </tr>
+
+      </thead>
+
+      <tbody>
+
+        <tr>
+
+          <td>Teste de receita</td>
+          <td>R$ 4.323,45</td>
+          <td>01/07/2022</td>
+          <td>Investimentos</td>
+          <td><span class="badge receita">Receita</span></td>
+          <td>Cartão de crédito</td>
+
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+    <!-- chart -->
+    <div class="chart-container">
+
+        <canvas id="financeChart"></canvas>
+
+    </div>
+    
+</div>

@@ -1,0 +1,97 @@
+.notes-board {
+
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 220px);
+  gap: 20px;
+
+  padding: 20px;
+
+  background: #f7f2e7;
+
+}
+
+/* nota */
+
+.note-card {
+
+  background: #fff8a6;
+
+  padding: 15px;
+
+  border-radius: 6px;
+
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+
+  transform: rotate(-1deg);
+
+  position: relative;
+
+   cursor: grab;
+
+}
+
+
+.note-card:active {
+
+  cursor: grabbing;
+
+}
+
+.cdk-drag-preview {
+
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+
+}
+
+.cdk-drag-placeholder {
+
+  opacity: 0.3;
+
+}
+/* alfinete */
+
+.pin {
+
+  width: 12px;
+  height: 12px;
+
+  background: red;
+
+  border-radius: 50%;
+
+  position: absolute;
+
+  top: -6px;
+  left: 50%;
+
+}
+
+/* botão nova nota */
+
+.add-note {
+
+  width: 220px;
+
+  height: 120px;
+
+  border: 2px dashed #bbb;
+
+  background: transparent;
+
+  cursor: pointer;
+
+  border-radius: 6px;
+
+}
+
+.tables-section{
+
+  margin-top: 40px;
+
+  display: grid;
+
+  grid-template-columns: 1fr;
+
+  gap: 30px;
+
+}
