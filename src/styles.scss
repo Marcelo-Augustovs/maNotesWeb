@@ -1,1 +1,35 @@
-/* You can add global styles to this file, and also import other style files */
+@use "shared/styles/variables.scss" as v;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: v.$background-color;
+  font-family: v.$font-main;
+  color: v.$text-primary;
+}
+
+h1, h2, h3 {
+  font-weight: 600;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+button.primary {
+  background: v.$accent-color;
+  color: white;
+}
+
+button.primary:hover {
+  opacity: 0.9;
+}
