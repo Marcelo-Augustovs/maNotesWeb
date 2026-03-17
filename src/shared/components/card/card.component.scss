@@ -1,0 +1,88 @@
+.card {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+
+}
+
+.summary-card {
+
+  display: flex;
+  align-items: center;
+  gap: 15px;
+
+  background: white;
+
+  padding: 20px;
+
+  border-radius: 10px;
+
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+
+  transition: all 0.2s ease;
+
+}
+
+.summary-card:hover {
+
+  transform: translateY(-3px);
+
+  box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+
+}
+
+.card-icon {
+
+  font-size: 24px;
+
+  width: 40px;
+  height: 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 8px;
+
+  background: #f2f2f2;
+
+}
+
+.card-title {
+
+  font-size: 13px;
+  color: #777;
+
+}
+
+.summary-card h2 {
+
+  margin: 2px 0 0 0;
+
+}
+
+/* cores */
+
+.receita {
+
+  border-top: 4px solid #4CAF50;
+
+}
+
+.despesa {
+
+  border-top: 4px solid #e74c3c;
+
+}
+
+.saldo {
+
+  border-top: 4px solid #3498db;
+
+}
+
+.geral {
+
+  border-top: 4px solid #f1c40f;
+
+}
