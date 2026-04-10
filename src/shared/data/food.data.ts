@@ -1,21 +1,26 @@
-export const FOOD_TABLE = {
+import { TableColumn } from "../models/table-column.model";
+
+export const FOOD_TABLE: {
+
+  title: string
+columns: TableColumn[]
+rows: any[]
+} = {
 
 title:"Lista de alimentos",
 
 columns:[
 
-{label:"Item", field:"item"},
-{label:"Categoria", field:"category"},
-{label:"Quantidade", field:"quantity"},
-{label:"Comprado", field:"done", type:"checkbox"}
+{ label:"Item", field:"item" },
+{ label:"Categoria", field:"category" },
+{ label:"Quantidade", field:"quantity" },
+{ label:"Comprado", field:"done", type:"checkbox" }
 
 ],
 
 rows:[
 
-{item:"Arroz", category:"Grãos", quantity:"5kg", done:false},
-{item:"Feijão", category:"Grãos", quantity:"1kg", done:false},
-{item:"Leite", category:"Laticínios", quantity:"2L", done:false}
+{ item:"Arroz", category:"Grãos", quantity:"5kg", done:false }
 
 ]
 
