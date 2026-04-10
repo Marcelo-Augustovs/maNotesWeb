@@ -1,0 +1,64 @@
+.period-filter {
+
+  display: flex;
+  align-items: center;
+  gap: 20px;
+
+}
+
+.year-control {
+
+  display: flex;
+  align-items: center;
+  gap: 5px;
+
+}
+
+.year-control button {
+
+  border: none;
+  background: #f2f2f2;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+
+}
+
+.year-input {
+
+  width: 70px;
+  text-align: center;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 4px;
+
+}
+
+.months {
+
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+
+}
+
+.months span {
+
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: 0.2s;
+
+}
+
+.months span:hover {
+
+  background: #f2f2f2;
+
+}
+
+.months span.active {
+
+  border-bottom: 3px solid #2c3e50;
+  font-weight: 600;
+}

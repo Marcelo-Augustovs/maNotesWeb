@@ -1,0 +1,37 @@
+<div class="overlay" *ngIf="isOpen">
+
+  <div class="modal">
+
+    <h2>
+      {{ type === 'receita' ? 'Nova Receita 💵' : 'Nova Despesa 💰' }}
+    </h2>
+
+    <input
+      [(ngModel)]="formData.descricao"
+      placeholder="Descrição"
+    >
+
+    <input
+      type="number"
+      [(ngModel)]="formData.valor"
+      placeholder="Valor"
+    >
+
+    <input
+      type="date"
+      [(ngModel)]="formData.data"
+    >
+
+    <input
+      [(ngModel)]="formData.categoria"
+      placeholder="Categoria"
+    >
+
+    <div class="actions">
+      <button (click)="onClose()">Cancelar</button>
+      <button (click)="onSave()">Salvar</button>
+    </div>
+
+  </div>
+
+</div>

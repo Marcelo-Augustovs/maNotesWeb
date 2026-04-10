@@ -1,0 +1,58 @@
+<div class="notes-board"
+     cdkDropList
+     (cdkDropListDropped)="drop($event)">
+
+  <div class="note-card"
+     *ngFor="let note of notes"
+     [@fadeOut]="note.removing ? 'removing' : 'default'"
+     cdkDrag>
+
+  <div class="pin"></div>
+
+  <!-- MODO VISUAL -->
+  <div *ngIf="!note.editing">
+
+    <h3 (click)="editNote(note)">
+      {{note.title || 'Sem título'}}
+    </h3>
+
+    <p (click)="editNote(note)">
+      {{note.text || 'Clique para editar'}}
+    </p>
+
+  </div>
+
+  <!-- MODO EDIÇÃO -->
+  <div *ngIf="note.editing">
+
+    <input 
+      [(ngModel)]="note.title"
+      placeholder="Título"
+      class="note-input"
+    >
+
+    <textarea 
+      [(ngModel)]="note.text"
+      placeholder="Digite sua anotação..."
+      class="note-textarea"
+    ></textarea>
+
+    <button (click)="saveNote(note)">
+      Salvar
+    </button>
+
+  </div>
+
+  <button 
+    class="delete-note"
+    (click)="deleteNote(note); $event.stopPropagation()">
+    ✖
+  </button>
+
+</div>
+
+  <button class="add-note" (click)="addNote()">
+    + Nova anotação
+  </button>
+
+</div>

@@ -1,57 +1,53 @@
 <div class="table-container">
 
-<h3>{{title}}</h3>
+    <h3>{{title}}</h3>
 
-<table>
+    <table>
 
-<thead>
+        <thead>
+            <tr>
+                <th *ngFor="let column of columns">
+                {{column.label}}
+                </th>
 
-<tr>
+                <th class="actions"></th>
+            </tr>
+        </thead>
 
-<th *ngFor="let column of columns">
-{{column.label}}
-</th>
+        <tbody>
 
-<th class="actions"></th>
+            <tr *ngFor="let row of rows; let i = index">
 
-</tr>
+                <td *ngFor="let column of columns">
 
-</thead>
+                    <input
+                    *ngIf="column.type !== 'checkbox'"
+                    [(ngModel)]="row[column.field]"
+                    (ngModelChange)="emitChange()"
+                    >
 
-<tbody>
+                    <input
+                    *ngIf="column.type === 'checkbox'"
+                    type="checkbox"
+                    [(ngModel)]="row[column.field]"
+                    (ngModelChange)="emitChange()"
+                    >
 
-<tr *ngFor="let row of rows; let i = index">
+                </td>
 
-<td *ngFor="let column of columns">
+                <td class="actions">
 
-<input
-*ngIf="column.type !== 'checkbox'"
-[(ngModel)]="row[column.field]"
-(ngModelChange)="emitChange()"
->
+                    <button class="delete" (click)="deleteRow(i)">
+                    🗑
+                    </button>
 
-<input
-*ngIf="column.type === 'checkbox'"
-type="checkbox"
-[(ngModel)]="row[column.field]"
-(ngModelChange)="emitChange()"
->
+                </td>
 
-</td>
+            </tr>
 
-<td class="actions">
+        </tbody>
 
-<button class="delete" (click)="deleteRow(i)">
-🗑
-</button>
-
-</td>
-
-</tr>
-
-</tbody>
-
-</table>
+    </table>
 
     <button class="add-row" (click)="addRow()">
     + adicionar linha

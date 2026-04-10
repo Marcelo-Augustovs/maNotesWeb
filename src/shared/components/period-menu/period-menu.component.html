@@ -1,0 +1,30 @@
+<div class="period-filter">
+
+  <div class="year-control">
+
+    <button (click)="previousYear()">◀</button>
+
+    <input
+      type="number"
+      [(ngModel)]="selectedYear"
+      (change)="changeYear()"
+      class="year-input"
+    >
+
+    <button (click)="nextYear()">▶</button>
+
+  </div>
+
+  <div class="months">
+
+    <span
+      *ngFor="let month of months; let i = index"
+      (click)="selectMonth(i)"
+      [class.active]="selectedMonth === i"
+    >
+      {{ month }}
+    </span>
+
+  </div>
+
+</div>

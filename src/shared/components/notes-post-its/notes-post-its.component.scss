@@ -1,0 +1,122 @@
+.notes-board {
+
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 220px);
+  gap: 20px;
+
+  padding: 20px;
+
+  background: #f7f2e7;
+
+}
+
+/* nota */
+
+.note-card {
+
+  background: #fff8a6;
+
+  padding: 15px;
+
+  border-radius: 6px;
+
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+
+  transform: rotate(-1deg);
+
+  position: relative;
+
+   cursor: grab;
+
+}
+
+
+.note-card:active {
+
+  cursor: grabbing;
+
+}
+
+.cdk-drag-preview {
+
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+
+}
+
+.cdk-drag-placeholder {
+
+  opacity: 0.3;
+
+}
+/* alfinete */
+
+.pin {
+
+  width: 12px;
+  height: 12px;
+
+  background: red;
+
+  border-radius: 50%;
+
+  position: absolute;
+
+  top: -6px;
+  left: 50%;
+
+}
+
+/* botão nova nota */
+
+.add-note {
+
+  width: 220px;
+
+  height: 120px;
+
+  border: 2px dashed #bbb;
+
+  background: transparent;
+
+  cursor: pointer;
+
+  border-radius: 6px;
+
+}
+
+.delete-note {
+
+  position: absolute;
+  top: 8px;
+  right: 8px;
+
+  background: rgba(239, 68, 68, 0.9);
+  color: white;
+  border: none;
+
+  width: 20px;
+  height: 20px;
+
+  border-radius: 4px; // 👈 menos “bolinha estranha”
+  font-size: 12px;
+
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  opacity: 0;
+  transition: 0.2s;
+
+  z-index: 10; // 👈 evita sobreposição estranha
+}
+
+.note-card:hover .delete-note {
+  opacity: 1;
+}
+
+.delete-note {
+  
+  backdrop-filter: blur(2px);
+}
