@@ -3,7 +3,8 @@
   <div class="modal">
 
     <h2>
-      {{ type === 'receita' ? 'Nova Receita 💵' : 'Nova Despesa 💰' }}
+      {{ isEdit ? 'Editar ' : 'Nova ' }}
+      {{ type === 'receita' ? 'Receita 💵' : 'Despesa 💰' }}
     </h2>
 
     <input
@@ -25,6 +26,11 @@
     <input
       [(ngModel)]="formData.categoria"
       placeholder="Categoria"
+    >
+
+    <input
+      [(ngModel)]="formData.pagamento"
+      placeholder="Pagamento"
     >
 
     <div class="actions">
