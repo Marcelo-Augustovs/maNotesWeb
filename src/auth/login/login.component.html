@@ -1,25 +1,42 @@
-<div class="login-container">
+<div class="login-wrapper">
+  <mat-card class="login-card glass-panel">
+    <mat-card-header>
+      <div mat-card-avatar class="header-image">
+        <mat-icon>account_circle</mat-icon>
+      </div>
+      <mat-card-title>Bem Vindo de Volta</mat-card-title>
+      <mat-card-subtitle>Acesse seu MaNotes</mat-card-subtitle>
+    </mat-card-header>
 
-  <h2>Login</h2>
+    <mat-card-content>
+      <form (ngSubmit)="onSubmit()" class="login-form">
+        
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Usuário</mat-label>
+          <input matInput type="text" [(ngModel)]="login" name="login" required>
+          <mat-icon matPrefix>person</mat-icon>
+        </mat-form-field>
 
-  <input 
-    type="text"
-    placeholder="Usuário"
-    [(ngModel)]="login"
-  >
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Senha</mat-label>
+          <input matInput [type]="hidePassword ? 'password' : 'text'" [(ngModel)]="password" name="password" required>
+          <mat-icon matPrefix>lock</mat-icon>
+          <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button">
+            <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
+        </mat-form-field>
 
-  <input 
-    type="password"
-    placeholder="Senha"
-    [(ngModel)]="password"
-  >
+        <p class="error-msg" *ngIf="error">
+          <mat-icon>error_outline</mat-icon> {{error}}
+        </p>
 
-  <button (click)="onSubmit()">
-    Entrar
-  </button>
+      </form>
+    </mat-card-content>
 
-  <p class="error" *ngIf="error">
-    {{error}}
-  </p>
-
+    <mat-card-actions align="end">
+      <button mat-raised-button color="primary" class="btn-login" (click)="onSubmit()">
+        Entrar <mat-icon>login</mat-icon>
+      </button>
+    </mat-card-actions>
+  </mat-card>
 </div>
