@@ -1,43 +1,64 @@
-<div class="notes-board"
-     cdkDropList
-     (cdkDropListDropped)="drop($event)">
+<div class="notes-container">
 
-  <div class="note-card"
-       *ngFor="let note of notes"
-       cdkDrag>
+  <div class="header-actions">
+    <h2>Minhas Anotações</h2>
+    <div class="actions-group">
+      <button mat-stroked-button color="accent" (click)="createTable()">
+        <mat-icon>table_chart</mat-icon> Nova Tabela
+      </button>
+    </div>
+  </div>
 
-    <div class="pin"></div>
+  <!-- Area de Notas usando o Componente Compartilhado -->
+  <app-notes-post-its 
+    [notes]="notes" 
+    (notesChange)="onNotesChange($event)">
+  </app-notes-post-its>
 
-    <h3>{{note.title}}</h3>
+  <mat-divider></mat-divider>
 
-    <p>{{note.text}}</p>
+  <!-- Area das Tabelas Recuperadas -->
+  <div class="tables-area">
+    <h3>Tabelas Salvas</h3>
+    
+    <div class="tables-grid" *ngIf="!selectedTable">
+      <mat-card *ngFor="let table of tables; let i = index" class="table-card glass-panel">
+        <mat-card-header>
+          <mat-icon mat-card-avatar>grid_on</mat-icon>
+          <mat-card-title>{{ table.title }}</mat-card-title>
+        </mat-card-header>
+        <mat-card-actions>
+          <button mat-button color="primary" (click)="openTable(table)">Abrir</button>
+          <button mat-button color="warn" (click)="deleteTable(i)">Excluir</button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+
+    <!-- Tabela Aberta -->
+    <div class="active-table-view glass-panel" *ngIf="selectedTable">
+      <div class="table-header">
+        <h4>{{selectedTable.title}}</h4>
+        <button mat-icon-button (click)="closeTable()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+      
+      <div class="table-responsive">
+        <table class="modern-table">
+          <thead>
+            <tr>
+              <th *ngFor="let col of selectedTable.columns">{{col.label}}</th>
+            </tr>
+          </thead>
+          <tbody>
+             <tr>
+               <td colspan="100%" class="empty-state">Nenhum dado na tabela...</td>
+             </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
 
   </div>
 
-  <button class="add-note" (click)="addNote()">
-    + Nova anotação
-  </button>
-
 </div>
-
-  <div class="tables-section">
-
-        <app-table
-            [title]="weekly.title"
-            [columns]="weekly.columns"
-            [rows]="weekly.rows">
-        </app-table>
-
-        <app-table
-            [title]="cleaning.title"
-            [columns]="cleaning.columns"
-            [rows]="cleaning.rows">
-        </app-table>
-
-        <app-table
-            [title]="food.title"
-            [columns]="food.columns"
-            [rows]="food.rows">
-        </app-table>
-
-    </div>

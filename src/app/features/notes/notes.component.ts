@@ -1,81 +1,87 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { TableComponent } from '../../../shared/components/table/table.component';
-import { WEEKLY_TABLE } from '../../../shared/data/weekly.data';
-import { FOOD_TABLE } from '../../../shared/data/food.data';
-import { CLEANING_TABLE } from '../../../shared/data/cleaning.data';
-import { DragDropModule, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop'
+import { Component, OnInit } from '@angular/core';
+import { NotesService, Note, TableData } from './notes.service';
+import { FormsModule } from '@angular/forms';
+
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatDividerModule } from '@angular/material/divider';
+import { NotesPostItsComponent } from '../../../shared/components/notes-post-its/notes-post-its.component';
 
 @Component({
   selector: 'app-notes',
-  imports: [CommonModule, TableComponent, DragDropModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    MatInputModule,
+    MatDividerModule,
+    NotesPostItsComponent
+  ],
   standalone: true,
   templateUrl: './notes.component.html',
   styleUrl: './notes.component.scss'
 })
-export class NotesComponent {
+export class NotesComponent implements OnInit {
 
-  weekly = WEEKLY_TABLE
-  cleaning = CLEANING_TABLE
-  food = FOOD_TABLE
+  notes: Note[] = [];
 
- notes = [
-      {
-        id: 1,
-        title: "Comprar pão",
-        text: "Ir na padaria depois da missa",
-        position: 0
-      },
+  tables: TableData[] = [];
+  selectedTable: any = null;
 
-      {
-        id: 2,
-        title: "Estudar Angular",
-        text: "Continuar módulo de componentes",
-        position: 1
-      }
-]
+  constructor(private notesService: NotesService) { }
 
-addNote(){
+  ngOnInit() {
+    this.notesService.getNotes().subscribe(data => {
+      this.notes = data;
+      this.loadNotes();
+    });
 
-console.log("Abrir modal de nova nota")
+    this.notesService.getTables().subscribe(data => {
+      this.tables = data;
+    });
+  }
 
-}
+  loadNotes() {
+    this.notes.sort((a, b) => a.position - b.position);
+  }
 
-drop(event: CdkDragDrop<any[]>) {
+  onNotesChange(updatedNotes: Note[]) {
+    this.notes = updatedNotes;
+    this.notesService.saveNotes(this.notes).subscribe();
+  }
 
-  moveItemInArray(
-    this.notes,
-    event.previousIndex,
-    event.currentIndex
-  )
+  // --- LOGICA DE TABELAS (RECUPERADOS) ---
+  openTable(table: any) {
+    this.selectedTable = table;
+  }
 
-  this.updatePositions()
+  closeTable() {
+    this.selectedTable = null;
+  }
 
-}
+  createTable() {
+    const newTable: TableData = {
+      id: Date.now(),
+      title: "Nova tabela",
+      columns: [
+        { label: "Coluna 1", field: "col1" },
+        { label: "Coluna 2", field: "col2" }
+      ],
+      rows: []
+    }
+    this.tables.push(newTable);
+    this.notesService.saveTables(this.tables).subscribe();
+  }
 
-updatePositions(){
-
-  this.notes.forEach((note, index) => {
-
-    note.position = index
-
-  })
-
-  this.savePositions()
-
-}
-
-savePositions(){
-
-console.log("Salvar posições", this.notes)
-
-}
-
-loadNotes(){
-
-this.notes.sort((a,b)=> a.position - b.position)
-
-}
-
-
+  deleteTable(index: number) {
+    if (confirm("Deseja excluir essa tabela?")) {
+      this.tables.splice(index, 1);
+      this.notesService.saveTables(this.tables).subscribe();
+    }
+  }
 }

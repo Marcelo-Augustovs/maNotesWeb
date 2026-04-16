@@ -1,122 +1,162 @@
+/* Board */
 .notes-board {
-
   display: grid;
-  grid-template-columns: repeat(auto-fill, 220px);
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 20px;
-
   padding: 20px;
-
-  background: #f7f2e7;
-
+  
+  /* Restoring the EXACT original board background color */
+  background: #f7f2e7; 
+  /* Force dark text for this specific board to prevent main app styles (which are dark-mode/white-text) from making the post-its text invisible */
+  color: #333; 
+  
+  border-radius: 12px;
+  min-height: 400px;
 }
 
-/* nota */
-
+/* Nota / Post-it */
 .note-card {
-
+  /* Restoring the EXACT original background */
   background: #fff8a6;
-
   padding: 15px;
-
   border-radius: 6px;
-
   box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-
   transform: rotate(-1deg);
-
   position: relative;
-
-   cursor: grab;
-
+  cursor: grab;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
 }
 
+.note-card:hover {
+  transform: rotate(0deg) scale(1.02);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  z-index: 2;
+}
 
 .note-card:active {
-
   cursor: grabbing;
-
 }
 
 .cdk-drag-preview {
-
   box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-
+  transform: rotate(1deg);
 }
 
 .cdk-drag-placeholder {
-
   opacity: 0.3;
-
 }
-/* alfinete */
 
+/* Alfinete Original */
 .pin {
-
   width: 12px;
   height: 12px;
-
   background: red;
-
   border-radius: 50%;
-
   position: absolute;
-
   top: -6px;
   left: 50%;
-
+  transform: translateX(-50%);
 }
 
-/* botão nova nota */
-
-.add-note {
-
-  width: 220px;
-
-  height: 120px;
-
-  border: 2px dashed #bbb;
-
+/* Campos de entrada */
+.note-input, .note-textarea {
+  width: 100%;
   background: transparent;
-
-  cursor: pointer;
-
-  border-radius: 6px;
-
+  border: 1px dashed rgba(0,0,0,0.2);
+  border-radius: 4px;
+  color: #333 !important; /* Forço a cor porque o input/textarea pode estar pegando estilo global white */
+  font-family: inherit;
+  padding: 6px;
+  margin-bottom: 8px;
+  box-sizing: border-box;
+  resize: none;
+}
+.note-input:focus, .note-textarea:focus {
+  outline: none;
+  border-color: rgba(0,0,0,0.5);
+  background: rgba(255, 255, 255, 0.4);
 }
 
-.delete-note {
+.note-textarea {
+  height: 80px;
+  flex: 1;
+}
 
+h3 {
+  font-size: 1.1rem;
+  margin: 0 0 8px 0;
+  font-weight: bold;
+  color: #333 !important;
+}
+
+p {
+  font-size: 0.95rem;
+  margin: 0;
+  flex: 1;
+  color: #333 !important; 
+}
+
+/* Botão Nova Nota Original */
+.add-note {
+  width: 100%;
+  min-height: 180px;
+  border: 2px dashed #bbb;
+  background: transparent;
+  color: #555;
+  cursor: pointer;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background 0.2s;
+}
+
+.add-note:hover {
+  background: rgba(0,0,0,0.05);
+}
+
+/* Botão Excluir */
+.delete-note {
   position: absolute;
   top: 8px;
   right: 8px;
-
   background: rgba(239, 68, 68, 0.9);
   color: white;
   border: none;
-
   width: 20px;
   height: 20px;
-
-  border-radius: 4px; // 👈 menos “bolinha estranha”
+  border-radius: 4px;
   font-size: 12px;
-
   cursor: pointer;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   opacity: 0;
-  transition: 0.2s;
-
-  z-index: 10; // 👈 evita sobreposição estranha
+  transition: opacity 0.2s;
+  z-index: 10;
 }
 
 .note-card:hover .delete-note {
   opacity: 1;
 }
 
-.delete-note {
-  
-  backdrop-filter: blur(2px);
+.delete-note:hover {
+  background: #ff1744;
+}
+
+/* Botão Salvar (Modo Edição) */
+.note-card button:not(.delete-note) {
+  background: #444;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 8px;
 }
