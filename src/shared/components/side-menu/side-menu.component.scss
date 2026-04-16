@@ -1,28 +1,96 @@
 .side-menu {
+  /* Layout Interno usando CSS GRID */
+  display: grid;
+  grid-template-rows: auto 1fr;
+  /* Cabeçalho e depois Lista preenchendo o resto */
+  gap: 16px;
 
-  width: 240px;
-  background: #2c3e50;
-  color: white;
+  /* Dimensões - Ocupando menos espaço */
+  width: 220px;
+  /* Reduzido de 240px */
   height: 100vh;
-  padding: 20px;
+  box-sizing: border-box;
 
+  /* Estética (seguindo seu padrão escuro original no menu para contrastar com o light theme) */
+  background: #1e293b;
+  /* Dark elegante igual ao dialog */
+  color: #f1f5f9;
+  border-right: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.05);
 }
 
-.side-menu ul {
-  list-style: none;
+.menu-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 24px 16px 8px 16px;
+
+  .logo-icon {
+    color: #3b82f6;
+    /* Azul destaque */
+    transform: scale(1.2);
+  }
+
+  h2 {
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    background: linear-gradient(90deg, #3b82f6 0%, #60a5fa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
 }
 
-.side-menu li {
-
-  padding: 12px;
-  border-radius: 6px;
-  margin-bottom: 6px;
-  cursor: pointer;
-
+.menu-label {
+  color: #cbd5e1;
 }
 
-.side-menu li:hover {
+.menu-list {
+  padding: 0 8px;
+  overflow-y: auto;
+  /* Permite scroll se os itens do grid estourarem a tela */
 
-  background: #34495e;
+  /* Personalização extra do item do Material List */
+  ::ng-deep .mat-mdc-list-item {
+    border-radius: 8px;
+    margin-bottom: 4px;
+    color: #cbd5e1;
+    transition: background 0.2s, color 0.2s;
 
+    .mdc-list-item__primary-text {
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+
+    mat-icon {
+      color: #94a3b8;
+      transition: color 0.2s;
+    }
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: #fff;
+
+      mat-icon {
+        color: #fff;
+      }
+    }
+
+    /* Classe ativada pelo routerLinkActive */
+    &.active-link {
+      background: rgba(59, 130, 246, 0.15);
+      /* Azul mais suave pra indicar aba atual */
+      color: #3b82f6;
+
+      .mdc-list-item__primary-text {
+        color: #3b82f6;
+        font-weight: 600;
+      }
+
+      mat-icon {
+        color: #3b82f6;
+      }
+    }
+  }
 }
