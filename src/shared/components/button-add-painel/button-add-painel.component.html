@@ -1,0 +1,9 @@
+<button mat-raised-button color="primary" [matMenuTriggerFor]="addMenu" class="btn-add">
+    <mat-icon>add_circle_outline</mat-icon> Adicionar Novo
+</button>
+<mat-menu #addMenu="matMenu">
+    <button mat-menu-item *ngFor="let button of buttonList" (click)="addItemEvent(button)">
+        <mat-icon color="{{button.color}}">{{button.matIcon}}</mat-icon>
+        <span>{{button.entityName}}</span>
+    </button>
+</mat-menu>

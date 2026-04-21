@@ -1,0 +1,12 @@
+.btn-add {
+    font-size: 1rem;
+    padding: 8px 16px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    mat-icon {
+        margin-right: 4px;
+    }
+}
