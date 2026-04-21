@@ -3,100 +3,17 @@
   <app-period-menu (periodChange)="onPeriodChange($event)"></app-period-menu>
 
   <div class="cards-grid">
-    <mat-card *ngFor="let card of cardList" class="finance-card glass-panel" [ngClass]="card.color">
-      <mat-card-header>
-        <mat-icon mat-card-avatar class="card-icon">{{card.icon}}</mat-icon>
-        <mat-card-title>{{card.title}}</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <h2 class="card-value">{{card.valor}}</h2>
-      </mat-card-content>
-    </mat-card>
+    <app-card *ngFor="let card of cardList" , [title]="card.title" , [icon]="card.icon" , [valor]="card.valor" ,
+      [color]="card.color" ,></app-card>
   </div>
-
   <div class="actions">
-    <div class="actions-right">
-      <div class="add-container">
-
-        <button mat-raised-button color="primary" [matMenuTriggerFor]="addMenu" class="btn-add">
-          <mat-icon>add_circle_outline</mat-icon> Adicionar Novo
-        </button>
-        <mat-menu #addMenu="matMenu">
-          <button mat-menu-item (click)="addRevenue()">
-            <mat-icon color="primary">attach_money</mat-icon>
-            <span>Receita</span>
-          </button>
-          <button mat-menu-item (click)="addExpense()">
-            <mat-icon color="warn">money_off</mat-icon>
-            <span>Despesa</span>
-          </button>
-        </mat-menu>
-
-      </div>
-    </div>
+    <app-button-add-painel [buttonList]="buttonList" (addItem)="handleAdd($event)">
+    </app-button-add-painel>
   </div>
-
-  <div class="main-content-grid">
-    <div class="table-area glass-panel">
-      <div class="table-header">
-        <h3>Histórico do mês</h3>
-        
-        <mat-form-field appearance="outline" class="search-field">
-          <mat-icon matPrefix>search</mat-icon>
-          <input matInput placeholder="Busque por descrição, tipo, data..." [(ngModel)]="searchTerm">
-        </mat-form-field>
-      </div>
-
-      <div class="table-responsive">
-        <table class="modern-table">
-          <thead>
-            <tr>
-              <th>Descrição</th>
-              <th>Valor</th>
-              <th>Data</th>
-              <th>Categoria</th>
-              <th>Tipo</th>
-              <th>Pagamento</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngIf="filteredTransactions.length === 0">
-               <td colspan="6" class="empty-table">Nenhuma transação encontrada.</td>
-            </tr>
-            <tr *ngFor="let t of paginatedTransactions" (click)="editTransaction(t)" class="clickable-row">
-              <td>{{ t.descricao }}</td>
-              <td [ngClass]="{'text-success': t.tipo === 'Receita', 'text-danger': t.tipo === 'Despesa'}">{{ t.valor }}</td>
-              <td>{{ t.data }}</td>
-              <td>{{ t.categoria }}</td>
-              <td><span class="badge" [ngClass]="t.tipo === 'Receita' ? 'badge-receita' : 'badge-despesa'">{{ t.tipo }}</span></td>
-              <td>{{ t.pagamento }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <mat-paginator class="glass-panel"
-        [length]="filteredTransactions.length"
-        [pageSize]="pageSize"
-        [pageSizeOptions]="[5, 10, 25, 50]"
-        (page)="handlePageEvent($event)"
-        aria-label="Selecione a página">
-      </mat-paginator>
-
-    </div>
-
-    <div class="chart-container glass-panel">
-      <canvas id="financeChart"></canvas>
-    </div>
-  </div>
+  <app-main-content-grid [transactions]="transactions" (editTransactionEvent)="editTransaction($event)">
+  </app-main-content-grid>
 
 </div>
-
-<app-modal-finance 
-  [isOpen]="showModal" 
-  [type]="modalType"
-  [isEdit]="isEditMode"
-  [initialData]="selectedTransaction"
-  (close)="closeModal()" 
-  (save)="handleSave($event)">
+<app-modal-finance [isOpen]="showModal" [type]="modalType" [isEdit]="isEditMode" [initialData]="selectedTransaction"
+  (close)="closeModal()" (save)="handleSave($event)">
 </app-modal-finance>

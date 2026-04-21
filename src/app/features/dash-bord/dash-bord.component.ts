@@ -1,6 +1,5 @@
-import { AfterViewInit, Component} from '@angular/core';
+import { AfterViewInit, Component } from '@angular/core';
 import { CardComponent } from '../../../shared/components/card/card.component';
-import Chart from 'chart.js/auto';
 import { Card } from '../../../shared/models/card.model';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -16,25 +15,19 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { ButtonAddPainelComponent } from '../../../shared/components/button-add-painel/button-add-painel.component';
 
-export interface Transaction {
-  descricao: string;
-  valor: string;
-  valorNum: number;
-  data: string;
-  categoria: string;
-  tipo: 'Receita' | 'Despesa';
-  pagamento: string;
-}
+import { Transaction } from '../../../shared/models/transaction.model';
+import { MainContentGridComponent } from '../../../shared/components/main-content-grid/main-content-grid.component';
 
 @Component({
   selector: 'app-dash-bord',
   imports: [
-    CardComponent, 
-    CommonModule, 
-    FormsModule, 
-    ModalFinanceComponent, 
+    CardComponent,
+    CommonModule,
+    FormsModule,
+    ModalFinanceComponent,
     PeriodMenuComponent,
     MatCardModule,
     MatButtonModule,
@@ -42,175 +35,165 @@ export interface Transaction {
     MatMenuModule,
     MatInputModule,
     MatFormFieldModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    ButtonAddPainelComponent,
+    MainContentGridComponent
   ],
   standalone: true,
   templateUrl: './dash-bord.component.html',
   styleUrl: './dash-bord.component.scss'
 })
 export class DashBordComponent implements AfterViewInit {
-  
+
   showModal = false;
   modalType: 'receita' | 'despesa' = 'receita';
   isEditMode = false;
   selectedTransaction: Transaction | null = null;
-  
-  pageSize = 5;
-  pageIndex = 0;
+
+  chartDataFromApi = { receitas: new Array(12).fill(0), despesas: new Array(12).fill(0) };
 
   cardList: Card[] = [];
 
   currentPeriod = { year: new Date().getFullYear(), month: new Date().getMonth() };
 
-  searchTerm: string = '';
-  transactions: Transaction[] = [
-    { descricao: 'Salário mensalista', valor: 'R$ 4.323,45', valorNum: 4323.45, data: '01/04/2026', categoria: 'Renda Fixa', tipo: 'Receita', pagamento: 'Pix' },
-    { descricao: 'Compras do Mês', valor: 'R$ 800,00', valorNum: 800, data: '10/04/2026', categoria: 'Alimentação', tipo: 'Despesa', pagamento: 'Cartão de crédito' },
-    { descricao: 'Conta de Energia', valor: 'R$ 250,00', valorNum: 250, data: '15/04/2026', categoria: 'Moradia', tipo: 'Despesa', pagamento: 'Débito Automático' },
-    { descricao: 'Venda de Notebook Velho', valor: 'R$ 1.500,00', valorNum: 1500, data: '22/04/2026', categoria: 'Extra', tipo: 'Receita', pagamento: 'Transferência Bancária' },
-    { descricao: 'Gasolina', valor: 'R$ 150,00', valorNum: 150, data: '25/04/2026', categoria: 'Transporte', tipo: 'Despesa', pagamento: 'Cartão de crédito' }
-  ];
-
-  // Chamada simulada se falhar, para manter fluidez
-  fallbackData = [
-    {ano: 2026, mes: 4, receitas: 5823.45, despesas: 1200}
-  ];
-
-  get filteredTransactions() {
-    return this.transactions.filter(t => {
-      const term = this.searchTerm.toLowerCase();
-      return t.descricao.toLowerCase().includes(term) ||
-             t.valor.toLowerCase().includes(term) ||
-             t.data.toLowerCase().includes(term) ||
-             t.categoria.toLowerCase().includes(term) ||
-             t.tipo.toLowerCase().includes(term) ||
-             t.pagamento.toLowerCase().includes(term);
-    });
-  }
-
-  get paginatedTransactions() {
-    const start = this.pageIndex * this.pageSize;
-    const end = start + this.pageSize;
-    return this.filteredTransactions.slice(start, end);
-  }
-
-  handlePageEvent(event: PageEvent) {
-    this.pageSize = event.pageSize;
-    this.pageIndex = event.pageIndex;
-  }
+  transactions: Transaction[] = [];
 
   constructor(
     private incomeService: IncomeService,
     private expenseService: ExpenseService,
-    private dashboardService: DashboardService) {}
+    private dashboardService: DashboardService) { }
 
   loadDashboard(year: number, month: number) {
-    this.dashboardService.getAll().subscribe({
-      next: (data) => {
+    const start = `${year}-01-01`;
+    const end = `${year}-12-31`;
+
+    const params = { start, end }; // Passando o ano como parâmetro conforme solicitado
+    this.dashboardService.getAllMonthFinance(params).subscribe({
+      next: (data: any) => {
         this.processDashboardData(data, year, month);
       },
       error: () => {
-        // Fallback p/ não quebrar a UI
-        this.processDashboardData(this.fallbackData, year, month);
+        // Fallback array vazios em caso de falha de conexão
+        this.processDashboardData({ incomes: [], expenses: [] }, year, month);
       }
     });
   }
 
-  processDashboardData(data: any[], year: number, month: number){
-      const mes = month + 1;
-      const ano = year;
+  getMonthFromDate(dateString: string): number {
+    if (!dateString) return -1;
+    if (dateString.includes('/')) {
+      const parts = dateString.split('/');
+      return parseInt(parts[1], 10) - 1;
+    } else {
+      const date = new Date(dateString);
+      return date.getMonth();
+    }
+  }
 
-      const registro = data.find(item => 
-        item.mes === mes && item.ano === ano
-      );
+  processDashboardData(data: any, year: number, month: number) {
+    const incomes = data.incomes?.content || [];
+    const expenses = data.expenses?.content || [];
 
-      const receitas = registro?.receitas ?? 2000; // default for visual
-      const despesas = registro?.despesas ?? 500;
-      const saldoMes = receitas - despesas;
+    let receitasMes = 0;
+    let despesasMes = 0;
 
-      this.cardList = [
-        {
-          title: "Receitas do mês",
-          color: "receita",
-          icon: "arrow_upward",
-          valor: this.formatMoney(receitas)
-        },
-        {
-          title: "Despesas do mês",
-          color: "despesa",
-          icon: "arrow_downward",
-          valor: this.formatMoney(despesas)
-        },
-        {
-          title: "Balanço do mês",
-          color: "saldo",
-          icon: "account_balance",
-          valor: this.formatMoney(saldoMes)
-        },
-        {
-          title: "Balanço geral",
-          color: "geral",
-          icon: "account_balance_wallet",
-          valor: this.formatMoney(this.getTotalGeral(data))
+    // Arrays para o Chart agrupados por mês (Jan a Dez, índice 0 a 11)
+    const chartReceitas = new Array(12).fill(0);
+    const chartDespesas = new Array(12).fill(0);
+
+    const transactionsList: Transaction[] = [];
+
+    incomes.forEach((inc: any) => {
+      const incMonth = this.getMonthFromDate(inc.dataModificacao);
+      const val = parseFloat(inc.valorRecebido || inc.valor || 0);
+
+      if (incMonth >= 0 && incMonth < 12) {
+        chartReceitas[incMonth] += val;
+        if (incMonth === month) {
+          receitasMes += val;
         }
-      ];
+      }
+
+      transactionsList.push({
+        descricao: inc.origemDoFundo || inc.descricao || '',
+        valor: this.formatMoney(val),
+        valorNum: val,
+        data: inc.dataModificacao,
+        categoria: inc.categoria,
+        tipo: 'Receita',
+        pagamento: inc.pagamento
+      });
+    });
+
+    expenses.forEach((exp: any) => {
+      const expMonth = this.getMonthFromDate(exp.dataModificacao);
+      const val = parseFloat(exp.valorDaConta || 0);
+
+      if (expMonth >= 0 && expMonth < 12) {
+        chartDespesas[expMonth] += val;
+        if (expMonth === month) {
+          despesasMes += val;
+        }
+      }
+
+      transactionsList.push({
+        descricao: exp.descricao || exp.nomeDaConta || '',
+        valor: this.formatMoney(val),
+        valorNum: val,
+        data: exp.dataModificacao,
+        categoria: exp.category,
+        tipo: 'Despesa',
+        pagamento: exp.payment
+      });
+    });
+
+    this.transactions = transactionsList;
+    // Atualiza o envio dos arrays dinâmicos processados para o grafico (do Jan até Dez)
+    this.chartDataFromApi = { receitas: chartReceitas, despesas: chartDespesas };
+
+    const saldoMes = receitasMes - despesasMes;
+
+    const totalReceitas = chartReceitas.reduce((acc, curr) => acc + curr, 0);
+    const totalDespesas = chartDespesas.reduce((acc, curr) => acc + curr, 0);
+    const balancoGeral = totalReceitas - totalDespesas;
+
+    this.cardList = [
+      {
+        title: "Receitas do mês",
+        color: "receita",
+        icon: "arrow_upward",
+        valor: this.formatMoney(receitasMes)
+      },
+      {
+        title: "Despesas do mês",
+        color: "despesa",
+        icon: "arrow_downward",
+        valor: this.formatMoney(despesasMes)
+      },
+      {
+        title: "Balanço do mês",
+        color: "saldo",
+        icon: "account_balance",
+        valor: this.formatMoney(saldoMes)
+      },
+      {
+        title: "Balanço geral",
+        color: "geral",
+        icon: "account_balance_wallet",
+        valor: this.formatMoney(balancoGeral)
+      }
+    ];
   }
 
   onPeriodChange(event: { year: number, month: number }) {
     this.currentPeriod = event;
     this.loadDashboard(event.year, event.month);
-  }  
-   
-  ngAfterViewInit(): void {
-    new Chart("financeChart", {
-      type: 'bar',
-      data: {
-        labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
-        datasets: [
-          {
-            label: 'Receitas',
-            data: [1200, 1900, 3000, 500, 2000, 3200],
-            backgroundColor: 'rgba(46, 204, 113, 0.8)',
-            borderRadius: 8
-          },
-          {
-            label: 'Despesas',
-            data: [800, 1100, 1200, 400, 900, 1500],
-            backgroundColor: 'rgba(231, 76, 60, 0.8)',
-            borderRadius: 8
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: {
-            labels: { color: '#ffffff' }
-          }
-        },
-        scales: {
-          x: { ticks: { color: '#ffffff' } },
-          y: { ticks: { color: '#ffffff' } }
-        }
-      }
-    });
+  }
 
+  ngAfterViewInit(): void {
     this.loadDashboard(this.currentPeriod.year, this.currentPeriod.month);
   }
 
-  addRevenue(){
-    this.isEditMode = false;
-    this.selectedTransaction = null;
-    this.modalType = 'receita';
-    this.showModal = true;
-  }
-
-  addExpense(){
-    this.isEditMode = false;
-    this.selectedTransaction = null;
-    this.modalType = 'despesa';
-    this.showModal = true;
-  }
 
   editTransaction(t: Transaction) {
     this.selectedTransaction = t;
@@ -219,15 +202,19 @@ export class DashBordComponent implements AfterViewInit {
     this.showModal = true;
   }
 
-  closeModal(){
+  closeModal() {
     this.showModal = false;
   }
 
-  handleSave(data: any){
-    if(this.modalType === 'receita'){
+  handleSave(data: any) {
+    if (this.modalType === 'receita') {
       const payload = {
-        origemDoFundo: data.descricao,
-        valorRecebido: data.valor
+        descricao: data.descricao,
+        valor: data.valor,
+        tipo: 'receita',
+        categoria: data.categoria,
+        pagamento: data.pagamento,
+        data: data.data
       };
       this.incomeService.create(payload).subscribe(() => {
         this.loadDashboard(this.currentPeriod.year, this.currentPeriod.month);
@@ -237,14 +224,14 @@ export class DashBordComponent implements AfterViewInit {
         descricao: data.descricao,
         valor: data.valor,
         data: data.data,
-        categoria: data.categoria
+        categoria: data.categoria,
+        pagamento: data.pagamento
       };
       this.expenseService.create(payload).subscribe(() => {
         this.loadDashboard(this.currentPeriod.year, this.currentPeriod.month);
       });
     }
   }
-
   formatMoney(value: number): string {
     return value.toLocaleString('pt-BR', {
       style: 'currency',
@@ -252,9 +239,38 @@ export class DashBordComponent implements AfterViewInit {
     });
   }
 
-  getTotalGeral(data: any[]): number {
-    return data.reduce((total, item) => {
-      return total + (item.receitas ?? 0) - (item.despesas ?? 0);
-    }, 0);
-  }     
+
+  buttonList = [
+    {
+      entityName: 'Receita',
+      matIcon: 'attach_money',
+      color: 'primary',
+      type: 'receita'
+    },
+    {
+      entityName: 'Despesa',
+      matIcon: 'money_off',
+      color: 'warn',
+      type: 'despesa'
+    }
+  ];
+  addRevenue() {
+    this.isEditMode = false;
+    this.selectedTransaction = null;
+    this.modalType = 'receita';
+    this.showModal = true;
+  }
+  addExpense() {
+    this.isEditMode = false;
+    this.selectedTransaction = null;
+    this.modalType = 'despesa';
+    this.showModal = true;
+  }
+  handleAdd(button: any) {
+    if (button.type === 'receita') {
+      this.addRevenue();
+    } else {
+      this.addExpense();
+    }
+  }
 }
