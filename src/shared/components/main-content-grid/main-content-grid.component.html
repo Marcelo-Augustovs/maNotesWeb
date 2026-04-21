@@ -1,0 +1,51 @@
+<div class="main-content-grid">
+  <div class="table-area glass-panel">
+    <div class="table-header">
+      <h3>Histórico do mês</h3>
+
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-icon matPrefix>search</mat-icon>
+        <input matInput placeholder="Busque por descrição, tipo, data..." [(ngModel)]="searchTerm">
+      </mat-form-field>
+    </div>
+
+    <div class="table-responsive">
+      <table class="modern-table">
+        <thead>
+          <tr>
+            <th>Descrição</th>
+            <th>Valor</th>
+            <th>Data</th>
+            <th>Categoria</th>
+            <th>Tipo</th>
+            <th>Pagamento</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="filteredTransactions.length === 0">
+            <td colspan="6" class="empty-table">Nenhuma transação encontrada.</td>
+          </tr>
+          <tr *ngFor="let t of paginatedTransactions" (click)="editTransaction(t)" class="clickable-row">
+            <td>{{ t.descricao }}</td>
+            <td [ngClass]="{'text-success': t.tipo === 'Receita', 'text-danger': t.tipo === 'Despesa'}">{{ t.valor }}
+            </td>
+            <td>{{ t.data }}</td>
+            <td>{{ t.categoria }}</td>
+            <td><span class="badge" [ngClass]="t.tipo === 'Receita' ? 'badge-receita' : 'badge-despesa'">{{ t.tipo
+                }}</span></td>
+            <td>{{ t.pagamento }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <mat-paginator class="glass-panel" [length]="filteredTransactions.length" [pageSize]="pageSize"
+      [pageSizeOptions]="[5, 10, 25, 50]" (page)="handlePageEvent($event)" aria-label="Selecione a página">
+    </mat-paginator>
+
+  </div>
+
+  <div class="chart-container glass-panel">
+    <canvas id="financeChart"></canvas>
+  </div>
+</div>
