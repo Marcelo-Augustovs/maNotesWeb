@@ -34,15 +34,20 @@ export class MainContentGridComponent implements AfterViewInit, OnChanges {
   pageIndex = 0;
 
   get filteredTransactions() {
+    if (!this.searchTerm) return this.transactions;
+    const term = this.searchTerm.toLowerCase();
     return this.transactions.filter(t => {
-      const term = this.searchTerm.toLowerCase();
-      return t.descricao.toLowerCase().includes(term) ||
-        t.valor.toLowerCase().includes(term) ||
-        t.data.toLowerCase().includes(term) ||
-        t.categoria.toLowerCase().includes(term) ||
-        t.tipo.toLowerCase().includes(term) ||
-        t.pagamento.toLowerCase().includes(term);
+      return (t.descricao || '').toLowerCase().includes(term) ||
+        (t.valor || '').toLowerCase().includes(term) ||
+        (t.data || '').toLowerCase().includes(term) ||
+        (t.categoria || '').toLowerCase().includes(term) ||
+        (t.tipo || '').toLowerCase().includes(term) ||
+        (t.pagamento || '').toLowerCase().includes(term);
     });
+  }
+
+  onSearchChange() {
+    this.pageIndex = 0;
   }
 
   get paginatedTransactions() {
