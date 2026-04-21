@@ -1,0 +1,93 @@
+<div class="events-dashboard">
+
+  <div class="dashboard-header">
+    <div class="header-content">
+      <h1>Eventos e Lembretes</h1>
+      <p>Organize seus compromissos e agende notificações automáticas!</p>
+    </div>
+  </div>
+
+  <div class="dashboard-grid">
+    
+    <!-- Lado Esquerdo: Calendário -->
+    <mat-card class="glass-card calendar-side">
+      <mat-calendar 
+        [(selected)]="selectedDate" 
+        (selectedChange)="onSelectChange($event)"
+        [dateClass]="dateClass">
+      </mat-calendar>
+    </mat-card>
+
+    <!-- Lado Direito: Agenda e Formulário -->
+    <div class="agenda-side">
+      
+      <!-- Listagem de Eventos do Dia Selecionado -->
+      <mat-card class="glass-card day-events-card">
+        <mat-card-header>
+          <mat-card-title>Agenda: {{ selectedDate | date:'dd/MM/yyyy' }}</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div *ngIf="eventsForSelectedDate.length === 0" class="empty-state">
+            <mat-icon>event_available</mat-icon>
+            <p>Nenhum evento para este dia.</p>
+          </div>
+
+          <div class="event-item" *ngFor="let evt of eventsForSelectedDate">
+            <div class="event-time">
+              {{ evt.date | date:'HH:mm' }}
+            </div>
+            <div class="event-info">
+              <h4>{{ evt.title }}</h4>
+              <span class="notification-badge" *ngIf="!evt.notified">
+                🔔 Avisar {{evt.notifyBeforeMinutes}}m antes
+              </span>
+              <span class="notification-badge notified-badge" *ngIf="evt.notified">
+                ✅ Avisado
+              </span>
+            </div>
+            <button mat-icon-button color="warn" (click)="deleteEvent(evt.id)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Formulário de Criação -->
+      <mat-card class="glass-card form-card">
+        <mat-card-header>
+          <mat-card-title>Novo Evento</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="form-content">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Título do Compromisso</mat-label>
+            <input matInput [(ngModel)]="newEventTitle" placeholder="Ex: Dentista">
+          </mat-form-field>
+
+          <div class="row-inputs">
+            <mat-form-field appearance="outline" class="flex-1">
+              <mat-label>Horário</mat-label>
+              <input matInput type="time" [(ngModel)]="newEventTime">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="flex-1">
+              <mat-label>Avisar antes (min)</mat-label>
+              <mat-select [(ngModel)]="newNotificationMins">
+                <mat-option [value]="0">Na hora exata</mat-option>
+                <mat-option [value]="5">5 minutos</mat-option>
+                <mat-option [value]="15">15 minutos</mat-option>
+                <mat-option [value]="30">30 minutos</mat-option>
+                <mat-option [value]="60">1 hora</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          
+          <button mat-flat-button color="primary" class="w-100 submit-btn" (click)="addEvent()">
+            <mat-icon>add_alert</mat-icon> Agendar Evento
+          </button>
+        </mat-card-content>
+      </mat-card>
+
+    </div>
+
+  </div>
+</div>
