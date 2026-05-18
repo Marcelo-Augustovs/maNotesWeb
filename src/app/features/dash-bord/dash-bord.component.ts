@@ -3,9 +3,9 @@ import { CardComponent } from '../../../shared/components/card/card.component';
 import { Card } from '../../../shared/models/card.model';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { DashboardService } from '../../../service/dashBordService';
-import { IncomeService } from '../../../service/incomeService';
-import { ExpenseService } from '../../../service/expenseService';
+import { DashboardService } from './services/dashBord.service';
+import { IncomeService } from './services/incomeService';
+import { ExpenseService } from './services/expenseService';
 import { ModalFinanceComponent } from '../../../shared/components/modal-finance/modal-finance.component';
 import { PeriodMenuComponent } from "../../../shared/components/period-menu/period-menu.component";
 
@@ -111,18 +111,18 @@ export class DashBordComponent implements AfterViewInit {
         chartReceitas[incMonth] += val;
         if (incMonth === month) {
           receitasMes += val;
+          transactionsList.push({
+            id: inc.id,
+            descricao: inc.origemDoFundo || inc.descricao || '',
+            valor: this.formatMoney(val),
+            valorNum: val,
+            data: inc.dataModificacao,
+            categoria: inc.categoria,
+            tipo: 'Receita',
+            pagamento: inc.pagamento
+          });
         }
       }
-
-      transactionsList.push({
-        descricao: inc.origemDoFundo || inc.descricao || '',
-        valor: this.formatMoney(val),
-        valorNum: val,
-        data: inc.dataModificacao,
-        categoria: inc.categoria,
-        tipo: 'Receita',
-        pagamento: inc.pagamento
-      });
     });
 
     expenses.forEach((exp: any) => {
@@ -133,18 +133,18 @@ export class DashBordComponent implements AfterViewInit {
         chartDespesas[expMonth] += val;
         if (expMonth === month) {
           despesasMes += val;
+          transactionsList.push({
+            id: exp.id,
+            descricao: exp.descricao || exp.nomeDaConta || '',
+            valor: this.formatMoney(val),
+            valorNum: val,
+            data: exp.dataModificacao,
+            categoria: exp.category,
+            tipo: 'Despesa',
+            pagamento: exp.payment
+          });
         }
       }
-
-      transactionsList.push({
-        descricao: exp.descricao || exp.nomeDaConta || '',
-        valor: this.formatMoney(val),
-        valorNum: val,
-        data: exp.dataModificacao,
-        categoria: exp.category,
-        tipo: 'Despesa',
-        pagamento: exp.payment
-      });
     });
 
     this.transactions = transactionsList;
@@ -206,6 +206,26 @@ export class DashBordComponent implements AfterViewInit {
     this.showModal = false;
   }
 
+  deleteTransaction(t: Transaction) {
+    if (confirm(`Tem certeza que deseja excluir ${t.descricao}?`)) {
+      if (t.tipo === 'Receita') {
+        this.incomeService.delete(t.id!).subscribe({
+          next: () => {
+            this.loadDashboard(this.currentPeriod.year, this.currentPeriod.month);
+          },
+          error: (err) => console.error('Erro ao excluir receita', err)
+        });
+      } else {
+        this.expenseService.delete(t.id!).subscribe({
+          next: () => {
+            this.loadDashboard(this.currentPeriod.year, this.currentPeriod.month);
+          },
+          error: (err) => console.error('Erro ao excluir despesa', err)
+        });
+      }
+    }
+  }
+
   handleSave(data: any) {
     if (this.modalType === 'receita') {
       const payload = {
@@ -216,9 +236,16 @@ export class DashBordComponent implements AfterViewInit {
         pagamento: data.pagamento,
         data: data.data
       };
-      this.incomeService.create(payload).subscribe(() => {
-        this.loadDashboard(this.currentPeriod.year, this.currentPeriod.month);
-      });
+
+      if (this.isEditMode && this.selectedTransaction?.id) {
+        this.incomeService.update(this.selectedTransaction.id, payload).subscribe(() => {
+          this.loadDashboard(this.currentPeriod.year, this.currentPeriod.month);
+        });
+      } else {
+        this.incomeService.create(payload).subscribe(() => {
+          this.loadDashboard(this.currentPeriod.year, this.currentPeriod.month);
+        });
+      }
     } else {
       const payload = {
         descricao: data.descricao,
@@ -227,16 +254,30 @@ export class DashBordComponent implements AfterViewInit {
         categoria: data.categoria,
         pagamento: data.pagamento
       };
-      this.expenseService.create(payload).subscribe(() => {
-        this.loadDashboard(this.currentPeriod.year, this.currentPeriod.month);
-      });
+
+      if (this.isEditMode && this.selectedTransaction?.id) {
+        this.expenseService.update(this.selectedTransaction.id, payload).subscribe(() => {
+          this.loadDashboard(this.currentPeriod.year, this.currentPeriod.month);
+        });
+      } else {
+        this.expenseService.create(payload).subscribe(() => {
+          this.loadDashboard(this.currentPeriod.year, this.currentPeriod.month);
+        });
+      }
     }
   }
   formatMoney(value: number): string {
-    return value.toLocaleString('pt-BR', {
-      style: 'currency',
-      currency: 'BRL'
+    const isNegative = value < 0;
+    const absValue = Math.abs(value);
+
+    // Formata apenas o número no padrão brasileiro (ex: 1.500,00)
+    const formattedNumber = absValue.toLocaleString('pt-BR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
     });
+
+    // Monta a string final com o 'R$' e o sinal negativo, se aplicável
+    return isNegative ? `R$ -${formattedNumber}` : `R$ ${formattedNumber}`;
   }
 
 

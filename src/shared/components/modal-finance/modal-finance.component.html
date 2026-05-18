@@ -7,35 +7,19 @@
       {{ type === 'receita' ? 'Receita 💵' : 'Despesa 💰' }}
     </h2>
 
-    <input
-      [(ngModel)]="formData.descricao"
-      placeholder="Descrição"
-    >
+    <input [(ngModel)]="formData.descricao" placeholder="Descrição">
 
-    <input
-      type="number"
-      [(ngModel)]="formData.valor"
-      placeholder="Valor"
-    >
+    <input type="number" [(ngModel)]="formData.valor" placeholder="Valor">
 
-    <input
-      type="date"
-      [(ngModel)]="formData.data"
-    >
+    <input type="date" [(ngModel)]="formData.data">
 
-    <input
-      [(ngModel)]="formData.categoria"
-      placeholder="Categoria"
-    >
+    <input [(ngModel)]="formData.categoria" placeholder="Categoria">
 
-    <input
-      [(ngModel)]="formData.pagamento"
-      placeholder="Pagamento"
-    >
+    <input [(ngModel)]="formData.pagamento" placeholder="Pagamento">
 
     <div class="actions">
-      <button (click)="onClose()">Cancelar</button>
-      <button (click)="onSave()">Salvar</button>
+      <button class="btn-cancel" (click)="onClose()">Cancelar</button>
+      <button class="btn-save" (click)="onSave()">Salvar</button>
     </div>
 
   </div>
