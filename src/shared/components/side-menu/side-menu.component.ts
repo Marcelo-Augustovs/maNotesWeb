@@ -16,7 +16,6 @@ export class SideMenuComponent {
   menuItems = [
     { path: '/dashboard', icon: 'dashboard', label: 'Dashboard' },
     { path: '/notes', icon: 'edit_note', label: 'Anotações' },
-    { path: '/expenses', icon: 'account_balance_wallet', label: 'Despesas' },
     { path: '/events', icon: 'event', label: 'Eventos' },
     { path: '/food-control', icon: 'kitchen', label: 'Controle Alimentar' },
     { path: '/physical-activity', icon: 'fitness_center', label: 'Treinos' }

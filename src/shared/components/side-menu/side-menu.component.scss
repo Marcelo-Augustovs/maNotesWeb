@@ -94,3 +94,45 @@
     }
   }
 }
+
+@media (max-width: 768px) {
+
+  .side-menu {
+    width: 70px; // menu compacto
+    padding: 8px 4px;
+  }
+
+  .menu-header {
+    justify-content: center;
+    padding: 16px 8px;
+
+    h2 {
+      display: none; // esconde "MaNotes"
+    }
+
+    .logo-icon {
+      transform: scale(1.4); // deixa ícone mais visível
+    }
+  }
+
+  .menu-list {
+
+    ::ng-deep .mat-mdc-list-item {
+      justify-content: center;
+      padding: 8px 0;
+
+      .mdc-list-item__content {
+        justify-content: center;
+      }
+
+      .mdc-list-item__primary-text {
+        display: none; // esconde texto do menu
+      }
+
+      mat-icon {
+        margin: 0;
+        font-size: 24px;
+      }
+    }
+  }
+}

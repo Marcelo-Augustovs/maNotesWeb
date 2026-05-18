@@ -1,64 +1,95 @@
 .period-filter {
-
   display: flex;
   align-items: center;
   gap: 20px;
-
+  flex-wrap: wrap;
 }
 
+/* ANO */
 .year-control {
-
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 8px;
 
-}
+  button {
+    border: none;
+    background: rgba(0, 0, 0, 0.05);
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s;
 
-.year-control button {
-
-  border: none;
-  background: #f2f2f2;
-  padding: 4px 8px;
-  border-radius: 4px;
-  cursor: pointer;
-
+    &:hover {
+      background: rgba(0, 0, 0, 0.1);
+    }
+  }
 }
 
 .year-input {
-
-  width: 70px;
+  width: 80px;
   text-align: center;
   border: 1px solid #ddd;
-  border-radius: 4px;
-  padding: 4px;
+  border-radius: 6px;
+  padding: 6px;
+}
 
+/* MESES */
+.months-wrapper {
+  overflow-x: auto;
+  width: 100%;
 }
 
 .months {
-
   display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-
+  gap: 10px;
+  min-width: max-content; // força scroll horizontal
 }
 
 .months span {
-
   cursor: pointer;
-  padding: 4px 8px;
-  border-radius: 4px;
+  padding: 6px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
   transition: 0.2s;
+  font-size: 0.9rem;
 
-}
-
-.months span:hover {
-
-  background: #f2f2f2;
-
+  &:hover {
+    background: rgba(0, 0, 0, 0.05);
+  }
 }
 
 .months span.active {
-
-  border-bottom: 3px solid #2c3e50;
+  background: #3b82f6;
+  color: white;
   font-weight: 600;
+}
+
+/* ======================
+   MOBILE
+====================== */
+@media (max-width: 768px) {
+
+  .period-filter {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .year-control {
+    justify-content: center;
+  }
+
+  .year-input {
+    width: 70px;
+  }
+
+  .months {
+    gap: 8px;
+  }
+
+  .months span {
+    font-size: 0.8rem;
+    padding: 6px 8px;
+  }
+
 }

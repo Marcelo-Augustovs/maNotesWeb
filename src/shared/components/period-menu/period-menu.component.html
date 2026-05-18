@@ -4,27 +4,21 @@
 
     <button (click)="previousYear()">◀</button>
 
-    <input
-      type="number"
-      [(ngModel)]="selectedYear"
-      (change)="changeYear()"
-      class="year-input"
-    >
+    <input type="number" [(ngModel)]="selectedYear" (change)="changeYear()" class="year-input">
 
     <button (click)="nextYear()">▶</button>
 
   </div>
 
-  <div class="months">
+  <!-- wrapper para scroll -->
+  <div class="months-wrapper">
+    <div class="months">
 
-    <span
-      *ngFor="let month of months; let i = index"
-      (click)="selectMonth(i)"
-      [class.active]="selectedMonth === i"
-    >
-      {{ month }}
-    </span>
+      <span *ngFor="let month of months; let i = index" (click)="selectMonth(i)" [class.active]="selectedMonth === i">
+        {{ month.substring(0,3) }}
+      </span>
 
+    </div>
   </div>
 
 </div>
