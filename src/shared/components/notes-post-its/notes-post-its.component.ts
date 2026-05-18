@@ -7,47 +7,49 @@ import { trigger, transition, style, animate, state } from '@angular/animations'
 
 @Component({
   selector: 'app-notes-post-its',
-  imports: [DragDropModule,CommonModule,FormsModule],
+  imports: [DragDropModule, CommonModule, FormsModule],
   standalone: true,
   templateUrl: './notes-post-its.component.html',
   styleUrl: './notes-post-its.component.scss',
   animations: [
-  trigger('fadeOut', [
+    trigger('fadeOut', [
 
-    state('default', style({
-      opacity: 1,
-      transform: 'scale(1)'
-    })),
+      state('default', style({
+        opacity: 1,
+        transform: 'scale(1)'
+      })),
 
-    state('removing', style({
-      opacity: 0,
-      transform: 'scale(0.8)'
-    })),
+      state('removing', style({
+        opacity: 0,
+        transform: 'scale(0.8)'
+      })),
 
-    transition('default => removing', [
-      animate('200ms ease-in')
+      transition('default => removing', [
+        animate('200ms ease-in')
+      ])
+
     ])
-
-  ])
-]
+  ]
 })
 export class NotesPostItsComponent {
-  
-  @Input() notes: any[] = [];
-  @Output() notesChange = new EventEmitter<any[]>();
 
-  addNote(){
+  @Input() notes: any[] = [];
+  @Output() saveNoteEvent = new EventEmitter<any>();
+  @Output() deleteNoteEvent = new EventEmitter<any>();
+
+  expandedNote: any = null;
+
+  addNote() {
     const newNote = {
-      id: Date.now(), 
+      id: 0, // 0 indicates a new note
       title: '',
       text: '',
       position: this.notes.length,
-      editing: true, 
-      removing: false 
+      editing: true,
+      removing: false
     }
     this.notes.push(newNote)
-    this.emitChange()
-  } 
+  }
 
   drop(event: CdkDragDrop<any[]>) {
     moveItemInArray(
@@ -58,34 +60,42 @@ export class NotesPostItsComponent {
     this.updatePositions()
   }
 
-  updatePositions(){
+  updatePositions() {
     this.notes.forEach((note, index) => {
       note.position = index
+      // Se quisermos salvar a posição, emitimos o save aqui.
+      // this.saveNoteEvent.emit(note); // Opcional, descomente se o backend suportar update de position
     })
-    this.emitChange()
   }
 
-  editNote(note:any){
+  editNote(note: any) {
     note.editing = true
   }
 
-  saveNote(note:any){
+  saveNote(note: any) {
     note.editing = false
-    this.emitChange()
+    this.saveNoteEvent.emit(note);
   }
 
-  deleteNote(note: any){
+  deleteNote(note: any) {
     const confirmDelete = confirm("Deseja excluir essa anotação?")
-    if(!confirmDelete) return 
+    if (!confirmDelete) return
 
     note.removing = true
     setTimeout(() => {
-      this.notes = this.notes.filter(n => n.id !== note.id)
-      this.emitChange()
+      this.deleteNoteEvent.emit(note);
     }, 200)
   }
 
-  private emitChange() {
-    this.notesChange.emit(this.notes);
+  openExpanded(note: any, event?: Event) {
+    if (event) {
+      event.stopPropagation();
+    }
+    this.expandedNote = note;
+  }
+
+  closeExpanded() {
+    this.expandedNote = null;
   }
 }
+

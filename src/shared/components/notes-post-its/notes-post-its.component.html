@@ -1,58 +1,61 @@
-<div class="notes-board"
-     cdkDropList
-     (cdkDropListDropped)="drop($event)">
+<div class="notes-board" cdkDropList cdkDropListOrientation="mixed" (cdkDropListDropped)="drop($event)">
 
-  <div class="note-card"
-     *ngFor="let note of notes"
-     [@fadeOut]="note.removing ? 'removing' : 'default'"
-     cdkDrag>
+  <div class="note-card" *ngFor="let note of notes" [@fadeOut]="note.removing ? 'removing' : 'default'" cdkDrag>
 
-  <div class="pin"></div>
+    <div class="pin"></div>
 
-  <!-- MODO VISUAL -->
-  <div *ngIf="!note.editing">
+    <!-- MODO VISUAL -->
+    <div *ngIf="!note.editing" class="note-view-mode">
 
-    <h3 (click)="editNote(note)">
-      {{note.title || 'Sem título'}}
-    </h3>
+      <h3 (click)="editNote(note)">
+        {{note.title || 'Sem título'}}
+      </h3>
 
-    <p (click)="editNote(note)">
-      {{note.text || 'Clique para editar'}}
-    </p>
+      <p class="note-text-preview" (click)="editNote(note)">
+        {{note.text || 'Clique para editar'}}
+      </p>
 
-  </div>
+      <div class="note-footer" *ngIf="note.text && note.text.length > 80">
+        <button class="see-more-btn" (click)="openExpanded(note, $event)">Ver mais / Expandir</button>
+      </div>
 
-  <!-- MODO EDIÇÃO -->
-  <div *ngIf="note.editing">
+    </div>
 
-    <input 
-      [(ngModel)]="note.title"
-      placeholder="Título"
-      class="note-input"
-    >
+    <!-- MODO EDIÇÃO -->
+    <div *ngIf="note.editing" class="note-edit-mode">
 
-    <textarea 
-      [(ngModel)]="note.text"
-      placeholder="Digite sua anotação..."
-      class="note-textarea"
-    ></textarea>
+      <input [(ngModel)]="note.title" placeholder="Título" class="note-input">
 
-    <button (click)="saveNote(note)">
-      Salvar
+      <textarea [(ngModel)]="note.text" placeholder="Digite sua anotação..." class="note-textarea"></textarea>
+
+      <button (click)="saveNote(note)">
+        Salvar
+      </button>
+
+    </div>
+
+    <button class="delete-note" (click)="deleteNote(note); $event.stopPropagation()">
+      ✖
     </button>
 
   </div>
-
-  <button 
-    class="delete-note"
-    (click)="deleteNote(note); $event.stopPropagation()">
-    ✖
-  </button>
-
-</div>
 
   <button class="add-note" (click)="addNote()">
     + Nova anotação
   </button>
 
+</div>
+
+<!-- OVERLAY DE EXPANSÃO -->
+<div class="note-overlay" *ngIf="expandedNote" (click)="closeExpanded()">
+  <div class="note-card expanded-view" (click)="$event.stopPropagation()">
+    <div class="pin"></div>
+    <div class="expanded-content">
+      <h3>{{expandedNote.title || 'Sem título'}}</h3>
+      <p class="full-text">{{expandedNote.text}}</p>
+    </div>
+    <div class="expanded-actions">
+      <button class="btn-close-expanded" (click)="closeExpanded()">Voltar (Ver menos)</button>
+    </div>
+  </div>
 </div>

@@ -1,37 +1,33 @@
 /* Board */
 .notes-board {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: 20px;
   padding: 20px;
-  
-  /* Restoring the EXACT original board background color */
   background: #f7f2e7; 
-  /* Force dark text for this specific board to prevent main app styles (which are dark-mode/white-text) from making the post-its text invisible */
   color: #333; 
-  
   border-radius: 12px;
   min-height: 400px;
+  align-items: flex-start;
 }
 
 /* Nota / Post-it */
 .note-card {
-  /* Restoring the EXACT original background */
   background: #fff8a6;
-  padding: 15px;
+  padding: 16px;
   border-radius: 6px;
   box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-  transform: rotate(-1deg);
   position: relative;
   cursor: grab;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  min-height: 180px;
+  width: 240px;  /* Tamanho fixo */
+  height: 240px; /* Tamanho fixo */
   display: flex;
   flex-direction: column;
 }
 
 .note-card:hover {
-  transform: rotate(0deg) scale(1.02);
+  transform: scale(1.02);
   box-shadow: 0 8px 16px rgba(0,0,0,0.2);
   z-index: 2;
 }
@@ -41,12 +37,35 @@
 }
 
 .cdk-drag-preview {
+  box-sizing: border-box;
+  background: #fff8a6;
+  padding: 16px;
+  border-radius: 6px;
   box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-  transform: rotate(1deg);
+  width: 240px;
+  height: 240px;
+  display: flex;
+  flex-direction: column;
 }
 
 .cdk-drag-placeholder {
   opacity: 0.3;
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.notes-board.cdk-drop-list-dragging .note-card:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.notes-board.cdk-drop-list-dragging .note-card:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
 /* Alfinete Original */
@@ -59,6 +78,13 @@
   top: -6px;
   left: 50%;
   transform: translateX(-50%);
+  box-shadow: inset -2px -2px 4px rgba(0,0,0,0.3);
+}
+
+.note-view-mode, .note-edit-mode {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 /* Campos de entrada */
@@ -67,7 +93,7 @@
   background: transparent;
   border: 1px dashed rgba(0,0,0,0.2);
   border-radius: 4px;
-  color: #333 !important; /* Forço a cor porque o input/textarea pode estar pegando estilo global white */
+  color: #333 !important;
   font-family: inherit;
   padding: 6px;
   margin-bottom: 8px;
@@ -81,7 +107,6 @@
 }
 
 .note-textarea {
-  height: 80px;
   flex: 1;
 }
 
@@ -90,19 +115,48 @@ h3 {
   margin: 0 0 8px 0;
   font-weight: bold;
   color: #333 !important;
+  cursor: text;
 }
 
-p {
+.note-text-preview {
   font-size: 0.95rem;
   margin: 0;
-  flex: 1;
   color: #333 !important; 
+  cursor: text;
+  display: -webkit-box;
+  -webkit-line-clamp: 5; /* Limita a 5 linhas */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1; 
+  line-height: 1.4;
+}
+
+.note-footer {
+  margin-top: 8px;
+  text-align: right;
+}
+
+.see-more-btn {
+  background: transparent;
+  border: none;
+  color: #1976d2;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0;
+  font-size: 0.85rem;
+  text-decoration: underline;
+  transition: color 0.2s;
+  
+  &:hover {
+    color: #115293;
+  }
 }
 
 /* Botão Nova Nota Original */
 .add-note {
-  width: 100%;
-  min-height: 180px;
+  width: 240px;
+  height: 240px;
   border: 2px dashed #bbb;
   background: transparent;
   color: #555;
@@ -113,11 +167,12 @@ p {
   display: flex;
   justify-content: center;
   align-items: center;
-  transition: background 0.2s;
+  transition: background 0.2s, transform 0.2s;
 }
 
 .add-note:hover {
   background: rgba(0,0,0,0.05);
+  transform: scale(1.02);
 }
 
 /* Botão Excluir */
@@ -128,8 +183,8 @@ p {
   background: rgba(239, 68, 68, 0.9);
   color: white;
   border: none;
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   border-radius: 4px;
   font-size: 12px;
   cursor: pointer;
@@ -137,7 +192,7 @@ p {
   align-items: center;
   justify-content: center;
   opacity: 0;
-  transition: opacity 0.2s;
+  transition: opacity 0.2s, background 0.2s;
   z-index: 10;
 }
 
@@ -150,13 +205,92 @@ p {
 }
 
 /* Botão Salvar (Modo Edição) */
-.note-card button:not(.delete-note) {
+.note-edit-mode button {
   background: #444;
   color: #fff;
   border: none;
-  padding: 6px 12px;
+  padding: 8px 12px;
   border-radius: 4px;
   cursor: pointer;
   font-weight: bold;
-  margin-top: 8px;
+  margin-top: auto;
+  transition: background 0.2s;
 }
+.note-edit-mode button:hover {
+  background: #222;
+}
+
+/* Overlay de Expansão (Ver Mais) */
+.note-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.expanded-view {
+  width: 90vw !important;
+  max-width: 600px !important;
+  height: auto !important;
+  min-height: 400px;
+  max-height: 80vh;
+  transform: rotate(0deg) !important;
+  cursor: default !important;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.4) !important;
+  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.expanded-view:hover {
+  transform: rotate(0deg) scale(1) !important; /* impede o hover de diminuir/girar */
+}
+
+.expanded-content {
+  overflow-y: auto;
+  flex: 1;
+  padding: 10px;
+  
+  h3 {
+    font-size: 1.5rem;
+    margin-bottom: 16px;
+    border-bottom: 2px dashed rgba(0,0,0,0.1);
+    padding-bottom: 8px;
+  }
+  
+  .full-text {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #333;
+    white-space: pre-wrap; /* Mantém as quebras de linha */
+  }
+}
+
+.expanded-actions {
+  margin-top: 24px;
+  text-align: center;
+}
+
+.btn-close-expanded {
+  background: #444;
+  color: #fff;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+  
+  &:hover {
+    background: #111;
+  }
+}
+
+@keyframes popIn {
+  0% { transform: scale(0.8); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+

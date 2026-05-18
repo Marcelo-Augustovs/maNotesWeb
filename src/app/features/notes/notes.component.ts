@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { NotesService, Note, TableData } from './notes.service';
+import { Note } from './models/Note.model';
+import { TableService, TableData } from '../../shared/services/table.service';
 import { FormsModule } from '@angular/forms';
+import { NotesService } from './services/notes.service';
 
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -9,6 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatDividerModule } from '@angular/material/divider';
 import { NotesPostItsComponent } from '../../../shared/components/notes-post-its/notes-post-its.component';
+import { DynamicTableComponent } from '../../shared/components/dynamic-table/dynamic-table.component';
 
 @Component({
   selector: 'app-notes',
@@ -20,7 +23,8 @@ import { NotesPostItsComponent } from '../../../shared/components/notes-post-its
     MatIconModule,
     MatInputModule,
     MatDividerModule,
-    NotesPostItsComponent
+    NotesPostItsComponent,
+    DynamicTableComponent
   ],
   standalone: true,
   templateUrl: './notes.component.html',
@@ -33,16 +37,20 @@ export class NotesComponent implements OnInit {
   tables: TableData[] = [];
   selectedTable: any = null;
 
-  constructor(private notesService: NotesService) { }
+  constructor(
+    private notesService: NotesService,
+    private tableService: TableService
+  ) { }
 
   ngOnInit() {
-    this.notesService.getNotes().subscribe(data => {
+    this.loadNotesFromApi();
+    this.loadTables();
+  }
+
+  loadNotesFromApi() {
+    this.notesService.getAll().subscribe((data: Note[]) => {
       this.notes = data;
       this.loadNotes();
-    });
-
-    this.notesService.getTables().subscribe(data => {
-      this.tables = data;
     });
   }
 
@@ -50,38 +58,84 @@ export class NotesComponent implements OnInit {
     this.notes.sort((a, b) => a.position - b.position);
   }
 
-  onNotesChange(updatedNotes: Note[]) {
-    this.notes = updatedNotes;
-    this.notesService.saveNotes(this.notes).subscribe();
+  onSaveNote(note: Note) {
+    if (note.id === 0) { // Nota nova
+      this.notesService.create(note).subscribe({
+        next: () => {
+          console.log('Nota criada com sucesso!');
+          this.loadNotesFromApi();
+        },
+        error: (err) => console.error('Erro ao criar nota:', err)
+      });
+    } else { // Nota existente
+      this.notesService.update(note).subscribe({
+        next: () => {
+          console.log('Nota atualizada com sucesso!');
+          this.loadNotesFromApi();
+        },
+        error: (err) => console.error('Erro ao atualizar nota:', err)
+      });
+    }
   }
 
-  // --- LOGICA DE TABELAS (RECUPERADOS) ---
+  onDeleteNote(note: Note) {
+    if (note.id !== 0) {
+      this.notesService.delete(note.id).subscribe({
+        next: () => {
+          console.log('Nota excluída com sucesso!');
+          this.loadNotesFromApi();
+        },
+        error: (err) => console.error('Erro ao excluir nota:', err)
+      });
+    } else {
+      // Era uma nota local que nunca foi pro banco
+      this.loadNotesFromApi();
+    }
+  }
+
+  // --- LÓGICA DE TABELAS (RECUPERADOS) ---
   openTable(table: any) {
-    this.selectedTable = table;
+    this.selectedTable = JSON.parse(JSON.stringify(table));
   }
 
   closeTable() {
     this.selectedTable = null;
+    this.loadTables();
+  }
+
+  loadTables() {
+    this.tableService.getTables().subscribe(data => {
+      this.tables = data;
+    });
   }
 
   createTable() {
     const newTable: TableData = {
-      id: Date.now(),
-      title: "Nova tabela",
+      id: 0,
+      title: "Nova Tabela",
       columns: [
         { label: "Coluna 1", field: "col1" },
         { label: "Coluna 2", field: "col2" }
       ],
       rows: []
     }
-    this.tables.push(newTable);
-    this.notesService.saveTables(this.tables).subscribe();
+    this.tableService.createTable(newTable).subscribe(() => {
+      this.loadTables();
+    });
   }
 
-  deleteTable(index: number) {
+  deleteTable(id: number) {
     if (confirm("Deseja excluir essa tabela?")) {
-      this.tables.splice(index, 1);
-      this.notesService.saveTables(this.tables).subscribe();
+      this.tableService.deleteTable(id).subscribe(() => {
+        this.loadTables();
+      });
+    }
+  }
+
+  onTableChange(updatedTable: TableData) {
+    this.selectedTable = updatedTable;
+    if (this.selectedTable.id) {
+      this.tableService.updateTable(this.selectedTable.id, this.selectedTable).subscribe();
     }
   }
 }
