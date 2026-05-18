@@ -10,7 +10,9 @@
     <app-button-add-painel [buttonList]="buttonList" (addItem)="handleAdd($event)">
     </app-button-add-painel>
   </div>
-  <app-main-content-grid [transactions]="transactions" (editTransactionEvent)="editTransaction($event)">
+  <app-main-content-grid [transactions]="transactions" [chartData]="chartDataFromApi" 
+    (editTransactionEvent)="editTransaction($event)"
+    (deleteTransactionEvent)="deleteTransaction($event)">
   </app-main-content-grid>
 
 </div>
