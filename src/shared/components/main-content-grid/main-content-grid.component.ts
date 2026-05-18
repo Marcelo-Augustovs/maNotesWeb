@@ -7,6 +7,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import Chart from 'chart.js/auto';
 import { Transaction } from '../../models/transaction.model';
+import { MatTableModule } from '@angular/material/table';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-main-content-grid',
@@ -17,7 +20,10 @@ import { Transaction } from '../../models/transaction.model';
     MatIconModule,
     MatInputModule,
     MatFormFieldModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatTableModule,
+    MatChipsModule,
+    MatButtonModule
   ],
   templateUrl: './main-content-grid.component.html',
   styleUrls: ['./main-content-grid.component.scss']
@@ -26,8 +32,19 @@ export class MainContentGridComponent implements AfterViewInit, OnChanges {
   @Input() transactions: Transaction[] = [];
   @Input() chartData: { receitas: number[], despesas: number[] } | null = null;
   @Output() editTransactionEvent = new EventEmitter<Transaction>();
+  @Output() deleteTransactionEvent = new EventEmitter<Transaction>();
 
   private financeChart: any;
+
+  displayedColumns: string[] = [
+    'descricao',
+    'valor',
+    'data',
+    'categoria',
+    'tipo',
+    'pagamento',
+    'acoes'
+  ];
 
   searchTerm: string = '';
   pageSize = 5;
@@ -65,6 +82,11 @@ export class MainContentGridComponent implements AfterViewInit, OnChanges {
     this.editTransactionEvent.emit(t);
   }
 
+  deleteTransaction(t: Transaction, event: Event) {
+    event.stopPropagation(); // Evita que o clique na linha dispare a edição
+    this.deleteTransactionEvent.emit(t);
+  }
+
   ngAfterViewInit(): void {
     this.initChart();
   }
@@ -99,12 +121,18 @@ export class MainContentGridComponent implements AfterViewInit, OnChanges {
         responsive: true,
         plugins: {
           legend: {
-            labels: { color: '#ffffff' }
+            labels: { color: '#334155', font: { weight: 'bold' } }
           }
         },
         scales: {
-          x: { ticks: { color: '#ffffff' } },
-          y: { ticks: { color: '#ffffff' } }
+          x: {
+            ticks: { color: '#475569', font: { weight: 500 } },
+            grid: { color: 'rgba(0, 0, 0, 0.05)' }
+          },
+          y: {
+            ticks: { color: '#475569', font: { weight: 500 } },
+            grid: { color: 'rgba(0, 0, 0, 0.05)' }
+          }
         }
       }
     });

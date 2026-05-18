@@ -9,7 +9,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 
-import { EventsService, CalendarEvent } from '../../../service/events.service';
+import { EventsService, CalendarEvent } from '../../features/events/services/events.service';
 
 @Component({
   selector: 'app-events',
@@ -19,8 +19,8 @@ import { EventsService, CalendarEvent } from '../../../service/events.service';
     MatCardModule, MatButtonModule, MatIconModule, MatDatepickerModule, MatNativeDateModule,
     MatInputModule, MatSelectModule
   ],
-  templateUrl: './events.component.html',
-  styleUrl: './events.component.scss'
+  templateUrl: '../../features/events/events.component.html',
+  styleUrl: '../../features/events/events.component.scss'
 })
 export class EventsComponent implements OnInit {
 

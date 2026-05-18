@@ -5,6 +5,10 @@
   font-family: 'Inter', 'Roboto', sans-serif;
   color: #1e293b;
 
+  @media (max-width: 600px) {
+    padding: 12px;
+  }
+
   .dashboard-header {
     display: flex;
     justify-content: space-between;
@@ -16,6 +20,13 @@
     backdrop-filter: blur(10px);
     border: 1px solid rgba(0, 0, 0, 0.05);
 
+    @media (max-width: 600px) {
+      padding: 16px;
+      margin-bottom: 1rem;
+      flex-direction: column;
+      text-align: center;
+    }
+
     .header-content {
       h1 {
         font-size: 2rem;
@@ -24,8 +35,18 @@
         background: linear-gradient(90deg, #8b5cf6 0%, #a855f7 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
+
+        @media (max-width: 600px) {
+          font-size: 1.5rem;
+        }
       }
-      p { margin: 0; color: #475569; }
+      p { 
+        margin: 0; 
+        color: #475569; 
+        @media (max-width: 600px) {
+          font-size: 0.9rem;
+        }
+      }
     }
   }
 
@@ -36,6 +57,7 @@
 
     @media (max-width: 900px) {
       grid-template-columns: 1fr;
+      gap: 16px;
     }
   }
 
@@ -50,6 +72,11 @@
   /* Customizando o Calendario */
   .calendar-side {
     padding: 16px;
+    
+    @media (max-width: 600px) {
+      padding: 8px;
+    }
+
     ::ng-deep .mat-calendar {
       width: 100%;
       height: 100%;
@@ -79,6 +106,10 @@
     display: flex;
     flex-direction: column;
     gap: 24px;
+
+    @media (max-width: 600px) {
+      gap: 16px;
+    }
   }
 
   .day-events-card {
@@ -91,6 +122,10 @@
       ::ng-deep .mat-mdc-card-title {
         font-size: 1.2rem;
         color: #1e293b;
+
+        @media (max-width: 600px) {
+          font-size: 1.1rem;
+        }
       }
     }
 
@@ -102,6 +137,11 @@
       padding: 32px 0;
       color: #94a3b8;
       mat-icon { font-size: 48px; width: 48px; height: 48px; margin-bottom: 16px; opacity: 0.5;}
+      
+      @media (max-width: 600px) {
+        padding: 16px 0;
+        mat-icon { font-size: 36px; width: 36px; height: 36px; }
+      }
     }
 
     .event-item {
@@ -114,17 +154,33 @@
       box-shadow: 0 2px 4px rgba(0,0,0,0.02);
       border-left: 4px solid #8b5cf6;
 
+      @media (max-width: 450px) {
+        flex-direction: column;
+        align-items: flex-start;
+        position: relative;
+        padding-bottom: 16px;
+      }
+
       .event-time {
         font-weight: 700;
         font-size: 1.1rem;
         color: #64748b;
         margin-right: 16px;
         min-width: 50px;
+
+        @media (max-width: 450px) {
+          margin-bottom: 8px;
+          color: #8b5cf6;
+        }
       }
 
       .event-info {
         flex: 1;
-        h4 { margin: 0 0 4px 0; font-size: 1.05rem; }
+        h4 { 
+          margin: 0 0 4px 0; 
+          font-size: 1.05rem; 
+          @media (max-width: 450px) { font-size: 1rem; }
+        }
         .notification-badge {
           display: inline-block;
           font-size: 0.75rem;
@@ -137,6 +193,15 @@
         .notified-badge {
           background: #dcfce7;
           color: #166534;
+        }
+      }
+
+      /* Move delete button to top right on mobile */
+      button[mat-icon-button] {
+        @media (max-width: 450px) {
+          position: absolute;
+          top: 4px;
+          right: 4px;
         }
       }
     }
@@ -155,6 +220,12 @@
       .row-inputs {
         display: flex;
         gap: 16px;
+        
+        @media (max-width: 500px) {
+          flex-direction: column;
+          gap: 0;
+        }
+
         .flex-1 { flex: 1; }
       }
 
