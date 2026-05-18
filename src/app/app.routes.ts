@@ -5,7 +5,7 @@ import { FoodControlComponent } from './features/food-control/food-control.compo
 import { PhysicalActivityComponent } from './features/physical-activity/physical-activity.component';
 import { LoginComponent } from '../auth/login/login.component';
 import { authGuard } from '../auth/auth.guard';
-import { EventsComponent } from './features/events/events.component';
+import { EventsComponent } from './shared/services/events.component';
 
 export const routes: Routes = [
   {
