@@ -1,0 +1,51 @@
+<div class="active-table-view glass-panel">
+  <div class="table-header">
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <input [(ngModel)]="table.title" (blur)="save()" class="table-title-input" placeholder="Nome da Tabela" />
+    </div>
+    <div>
+      <button mat-stroked-button color="primary" (click)="addColumn()" style="margin-right: 8px;">
+        <mat-icon>view_column</mat-icon> + Coluna
+      </button>
+      <button mat-icon-button (click)="onClose()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </div>
+  
+  <div class="table-responsive">
+    <table class="modern-table">
+      <thead>
+        <tr>
+          <th *ngFor="let col of table.columns; let cIndex = index">
+            <div style="display: flex; align-items: center; gap: 4px;">
+              <input [(ngModel)]="col.label" (blur)="save()" class="col-header-input" />
+              <mat-icon style="font-size: 16px; width: 16px; height: 16px; cursor: pointer; color: #ff5252;" (click)="removeColumn(cIndex)">close</mat-icon>
+            </div>
+          </th>
+          <th style="width: 50px;"></th>
+        </tr>
+      </thead>
+      <tbody>
+         <tr *ngFor="let row of table.rows; let rIndex = index">
+           <td *ngFor="let col of table.columns">
+             <input [(ngModel)]="row[col.field]" (blur)="save()" class="cell-input" placeholder="..." />
+           </td>
+           <td>
+             <button mat-icon-button color="warn" (click)="removeRow(rIndex)" style="transform: scale(0.8);">
+               <mat-icon>delete</mat-icon>
+             </button>
+           </td>
+         </tr>
+         <tr *ngIf="!table.rows || table.rows.length === 0">
+           <td [attr.colspan]="table.columns.length + 1" class="empty-state">Nenhum dado. Adicione uma linha.</td>
+         </tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="margin-top: 16px;">
+    <button mat-flat-button color="primary" (click)="addRow()">
+      <mat-icon>add</mat-icon> Adicionar Linha
+    </button>
+  </div>
+</div>
